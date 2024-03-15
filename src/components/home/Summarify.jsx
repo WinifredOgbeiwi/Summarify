@@ -44,7 +44,7 @@ const Summarify = () => {
     
                     </div>
                 )}
-                <Button specific='nav_button_full hero-button' text={summary ? 'Save Summary ' : 'Summarize'} />
+                <Button specific='nav_button_full hero-button' onClick={handleSummarify} text={summary ? 'Save Summary ' : 'Summarize'} />
                 {/* <button className='nav_buttons nav_button_full hero-button' onClick={handleSummarify}><span className='button-content'>{summary ? 'Save Summary ' : 'Summarize'}</span></button> */}
                
             </form>

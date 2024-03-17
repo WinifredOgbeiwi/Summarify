@@ -108,7 +108,7 @@
 }
 
 .hero-content p {
-margin: 10px 0 40px;
+    margin: 10px 0 40px;
     font-size: 1.1rem;
 }
 
@@ -138,11 +138,29 @@ margin: 10px 0 40px;
     width: 60%;
     margin: 0 auto;
 }
-.error-message{
+
+.error-message {
     color: red;
     font-size: .6rem;
 }
+
+.summarized-header {
+    text-align: center;
+    color: #862FE7;
+    margin: 20px 0 10px;
+}
+
 .summarized-text {
+    box-shadow: rgba(197, 193, 198, 0.2) 0px 7px 29px 0px;
+    padding: 20px;
+}
+
+.summarized-text p {
     line-height: 1.5;
     word-spacing: 2px;
+    text-align: justify;
+}
+
+.extra-info {
+    margin-top: 20px;
 }

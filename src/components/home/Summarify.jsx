@@ -1,55 +1,76 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import Button from '../Button';
-import { useGetSummaryQuery } from '../../api/article-summarizer';
+import { useLazyGetSummaryQuery } from '../../api/summaryApi';
+import IMAGES from '../../constant/assests';
+import Loader from '../Loader';
 
 const Summarify = () => {
-    const [url, setUrl] = useState('');
-    const [submitted, setSubmitted] = useState(false);
-    const { data: summary, isLoading, isError, error } = useGetSummaryQuery(submitted ? url : undefined, {
-        skip: !submitted // Skip the initial execution of the query until submitted is true
-    });
+    const [summarify, setSummarify] = useState({
+        url: "",
+        summary: ""
+    })
+    const [getSummary, { error, isFetching }] = useLazyGetSummaryQuery();
 
-    const handleSummarify = (e) => {
+    const handleSummarify = async (e) => {
         e.preventDefault();
-        setSubmitted(true);
-    
-    };
+        const { data } = await getSummary({ url: summarify.url })
+        if (data?.summary) {
+            const newSummary = { ...summarify, summary: data.summary }
+            setSummarify(newSummary)
+            console.log(newSummary)
+        }
+
+    }
     const getWordCount = (text) => {
-        if (!text) return 0; 
+        if (!text) return 0;
         const stringText = String(text);
-     
         return stringText.trim().split(/\s+/).length;
     };
+
     const getLetterCount = (text) => {
         if (!text) return 0;
         const stringText = String(text);
         return stringText.replace(/\s+/g, '').length;
     };
+
     return (
         <div className='summarify'>
-            <form className='text-summarize'>
-                <input type="url" placeholder='https://enter-article-url' required value={url}
-                    onChange={(e) => setUrl(e.target.value)} />
-                {submitted && (
-                    <div>
-                        {isLoading && <p>Loading...</p>}
-                        {isError && <p className='error-message'>Error:{error.error} </p>}
-                        <div className='summarized-text'>
-                            {summary && <p>{summary.summary}</p>}
-                        </div>
-                    <hr className='extra-info'/>
-                        <p>Word count: {summary && summary.summary ? getWordCount(summary.summary) : 0}</p>
+            <form className='text-summarize' onSubmit={handleSummarify}>
+                <input type='url' placeholder='https://enter-article-url' required value={summarify.url} onChange={(e) => setSummarify({ ...summarify, url: e.target.value })} />
 
-                        <p>Letter count: {summary && summary.summary ?getLetterCount(summary.summary): 0}</p>
-    
-                    </div>
-                )}
-                <Button specific='nav_button_full hero-button' onClick={handleSummarify} text={summary ? 'Save Summary ' : 'Summarize'} />
-                {/* <button className='nav_buttons nav_button_full hero-button' onClick={handleSummarify}><span className='button-content'>{summary ? 'Save Summary ' : 'Summarize'}</span></button> */}
-               
+                <div>
+                    {isFetching ? (
+                        <Loader />
+                    )
+                        :
+                        error ? (<p className='error-message'>Error:{error.data.error}</p>)
+                            :
+                            (summarify.summary && (
+                                <>
+                                    <h3 className='summarized-header'>Summarized Text</h3>
+                                    <div className='summarized-text' >
+                                        <p>{summarify.summary}</p>
+                                        <hr className='extra-info' />
+
+                                        <div className='flex'>
+                                            <p>Word count: <span style={{ fontWeight: "900" }}>{summarify ? getWordCount(summarify.summary) : ''}</span></p>
+                                            <p>Letter count: <span style={{ fontWeight: "900" }}>{summarify ? getLetterCount(summarify.summary) : ''}</span></p>
+                                        </div>
+                                    </div>
+
+                                </>
+
+                            ))
+                    }
+
+
+
+                </div>
+
+                <Button specific='nav_button_full hero-button' type="submit" text={summarify.summary ? 'Save Summary ' : 'Summarize'} />
             </form>
         </div>
-    )
-}
+    );
+};
 
-export default Summarify
+export default Summarify;

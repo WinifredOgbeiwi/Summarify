@@ -32,10 +32,9 @@ const Hero = () => {
                 />
                     <br />in a click
                 </h1>
-                <h1></h1>
                 <p>Summarify helps you summarize any piece of text into concise, easy to digest content so you can free yourself from information overload.</p>
             </div>
-            <div className='' >
+            <div style={{paddingBottom:"20px"}} >
                 <Summarify />
             </div>
         </main>
